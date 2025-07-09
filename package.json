@@ -1,0 +1,62 @@
+{
+  "name": "appagenda",
+  "version": "1.0.0",
+  "description": "Sistema desktop para gerenciamento de funcionários e controle de diárias de trabalho",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "build": "electron-builder",
+    "dist": "electron-builder --win"
+  },
+  "keywords": [
+    "electron",
+    "desktop",
+    "sqlite",
+    "funcionarios",
+    "diarias",
+    "relatorios",
+    "pdf",
+    "gestao"
+  ],
+  "author": "Igor Gonçalves",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seu-usuario/AppAgenda.git"
+  },
+  "dependencies": {
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^5.0.2",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.appagenda.app",
+    "productName": "Agenda de Trabalho",
+    "icon": "agenda.png",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/sqlite3/build/Release/obj/**/*",
+      "!README.md",
+      "!COMO_USAR.md"
+    ],
+    "win": {
+      "target": "portable",
+      "sign": false,
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

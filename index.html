@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda de Trabalho - Sistema de Diárias</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style_fix.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1><i class="fas fa-calendar-alt"></i> Agenda de Trabalho</h1>
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="abrirModal('modalConfiguracoes')">
+          <i class="fas fa-cog"></i> Configurações
+        </button>
+        <button class="btn btn-success" onclick="abrirModal('modalFuncionarios')">
+          <i class="fas fa-users"></i> Funcionários
+        </button>
+        <button class="btn btn-info" onclick="abrirModalRelatorios()">
+          <i class="fas fa-chart-bar"></i> Relatórios
+        </button>
+      </div>
+    </header>
+
+    <!-- Dashboard -->
+    <section class="dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+          <div class="stat-content">
+            <h3 id="totalDiasMes">0</h3>
+            <p>Dias trabalhados este mês</p>
+          </div>
+        </div>
+        <div class="stat-card clickable" onclick="abrirModalHistorico('ganhos')">
+          <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+          <div class="stat-content">
+            <h3 id="totalGanhosMes">R$ 0,00</h3>
+            <p>Total ganho este mês</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-user"></i></div>
+          <div class="stat-content">
+            <h3 id="totalFuncionarios">0</h3>
+            <p>Funcionários ativos</p>
+          </div>
+        </div>
+        <div class="stat-card clickable" onclick="abrirModalHistorico('veiculo')">
+          <div class="stat-icon"><i class="fas fa-car"></i></div>
+          <div class="stat-content">
+            <h3 id="totalVeiculo">R$ 0,00</h3>
+            <p>Ganho com veículo</p>
+          </div>
+        </div>
+        <!-- TOTAIS HISTÓRICOS -->
+        <div class="stat-card historical">
+          <div class="stat-icon"><i class="fas fa-history"></i></div>
+          <div class="stat-content">
+            <h3 id="totalDiasHistorico">0</h3>
+            <p>Total de dias (histórico)</p>
+          </div>
+        </div>
+        <div class="stat-card historical clickable" onclick="abrirModalHistorico('ganhos')">
+          <div class="stat-icon"><i class="fas fa-coins"></i></div>
+          <div class="stat-content">
+            <h3 id="totalGanhosHistorico">R$ 0,00</h3>
+            <p>Total ganho (histórico)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controles do Calendário -->
+    <section class="calendar-controls">
+      <div class="month-selector">
+        <button class="btn btn-secondary" onclick="mudarMes(-1)">
+          <i class="fas fa-chevron-left"></i> Mês Anterior
+        </button>
+        <h2 id="mesAtual">Janeiro 2025</h2>
+        <button class="btn btn-secondary" onclick="mudarMes(1)">
+          Próximo Mês <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="quick-actions">
+        <button class="btn btn-warning" onclick="gerarRelatorioQuinzena()">
+          <i class="fas fa-file-pdf"></i> Relatório Quinzena
+        </button>
+        <button class="btn btn-success" onclick="gerarRelatorioMensal()">
+          <i class="fas fa-file-pdf"></i> Relatório Mensal
+        </button>
+      </div>
+    </section>
+
+    <!-- Calendário -->
+    <section class="calendar-section">
+      <div class="calendar" id="calendario">
+        <!-- O calendário será gerado dinamicamente -->
+      </div>
+    </section>
+
+    <!-- Lista de Funcionários Presentes -->
+    <section class="funcionarios-presentes">
+      <h3>Funcionários Trabalhando Hoje</h3>
+      <div id="funcionariosHoje" class="funcionarios-lista">
+        <!-- Lista será gerada dinamicamente -->
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal de Funcionários -->
+  <div id="modalFuncionarios" class="modal">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h2><i class="fas fa-users"></i> Gerenciar Funcionários</h2>
+        <span class="close" onclick="fecharModal('modalFuncionarios')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="funcionarios-tabs">
+          <button class="tab-btn active" onclick="alternarAba('cadastro')">
+            <i class="fas fa-plus"></i> Cadastrar
+          </button>
+          <button class="tab-btn" onclick="alternarAba('lista')">
+            <i class="fas fa-list"></i> Lista
+          </button>
+          <button class="tab-btn" onclick="alternarAba('perfis')">
+            <i class="fas fa-id-card"></i> Perfis
+          </button>
+        </div>
+
+        <!-- Aba de Cadastro -->
+        <div id="abaCadastro" class="tab-content active">
+          <form id="formFuncionario" class="form-funcionario">
+            <div class="form-group">
+              <label for="nomeFuncionario">Nome do Funcionário:</label>
+              <input type="text" id="nomeFuncionario" required>
+            </div>
+            <div class="form-group">
+              <label for="diariaFuncionario">Valor da Diária (R$):</label>
+              <input type="number" id="diariaFuncionario" step="0.01" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Salvar Funcionário
+            </button>
+          </form>
+        </div>
+
+        <!-- Aba de Lista -->
+        <div id="abaLista" class="tab-content">
+          <div class="funcionarios-lista-modal">
+            <h3>Funcionários Cadastrados</h3>
+            <div id="listaFuncionarios">
+              <!-- Lista será gerada dinamicamente -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Aba de Perfis -->
+        <div id="abaPerfis" class="tab-content">
+          <div id="funcionariosPerfis" class="funcionarios-grid">
+            <!-- Perfis serão gerados dinamicamente -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Configurações -->
+  <div id="modalConfiguracoes" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-cog"></i> Configurações</h2>
+        <span class="close" onclick="fecharModal('modalConfiguracoes')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="formConfiguracoes">
+          <div class="form-group">
+            <label for="diariaVeiculo">Diária do Veículo (R$):</label>
+            <input type="number" id="diariaVeiculo" step="0.01" required>
+            <small>Configure o valor da diária do veículo usado no trabalho</small>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Salvar Configurações
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Relatórios -->
+  <div id="modalRelatorios" class="modal">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h2><i class="fas fa-chart-bar"></i> Relatórios e Comprovantes</h2>
+        <span class="close" onclick="fecharModal('modalRelatorios')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="relatorios-tabs">
+          <button class="tab-btn active" onclick="alternarAbaRelatorios('relatorios')">
+            <i class="fas fa-file-pdf"></i> Relatórios Gerados
+          </button>
+          <button class="tab-btn" onclick="alternarAbaRelatorios('comprovantes')">
+            <i class="fas fa-receipt"></i> Comprovantes
+          </button>
+        </div>
+
+        <!-- Aba de Relatórios -->
+        <div id="abaRelatorios" class="tab-content active">
+          <div class="relatorio-controles">
+            <div class="form-group">
+              <label for="dataInicioRelatorio">Filtrar por Data Início:</label>
+              <input type="date" id="dataInicioRelatorio" onchange="filtrarRelatorios()">
+            </div>
+            <div class="form-group">
+              <label for="dataFimRelatorio">Filtrar por Data Fim:</label>
+              <input type="date" id="dataFimRelatorio" onchange="filtrarRelatorios()">
+            </div>
+            <button class="btn btn-secondary" onclick="limparFiltrosRelatorios()">
+              <i class="fas fa-filter"></i> Limpar Filtros
+            </button>
+          </div>
+          <div class="relatorios-gerados-section">
+            <h3>Relatórios Gerados</h3>
+            <div id="listaRelatoriosGerados">
+              <!-- Lista será gerada dinamicamente -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Aba de Comprovantes -->
+        <div id="abaComprovantes" class="tab-content">
+          <div class="comprovantes-controles">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="funcionarioFiltroComprovante">Filtrar por Funcionário:</label>
+                <select id="funcionarioFiltroComprovante" onchange="filtrarComprovantes()">
+                  <option value="">Todos os funcionários</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="mesFiltroComprovante">Filtrar por Mês:</label>
+                <select id="mesFiltroComprovante" onchange="filtrarComprovantes()">
+                  <option value="">Todos os meses</option>
+                  <option value="1">Janeiro</option>
+                  <option value="2">Fevereiro</option>
+                  <option value="3">Março</option>
+                  <option value="4">Abril</option>
+                  <option value="5">Maio</option>
+                  <option value="6">Junho</option>
+                  <option value="7">Julho</option>
+                  <option value="8">Agosto</option>
+                  <option value="9">Setembro</option>
+                  <option value="10">Outubro</option>
+                  <option value="11">Novembro</option>
+                  <option value="12">Dezembro</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary" onclick="abrirModalComprovante()">
+                <i class="fas fa-plus"></i> Adicionar Comprovante
+              </button>
+              <button class="btn btn-secondary" onclick="limparFiltrosComprovantes()">
+                <i class="fas fa-filter"></i> Limpar Filtros
+              </button>
+            </div>
+          </div>
+          <div class="comprovantes-section">
+            <h3>Comprovantes de Pagamento</h3>
+            <div id="listaComprovantes">
+              <!-- Lista será gerada dinamicamente -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Dia de Trabalho -->
+  <div id="modalDiaTrabalho" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-calendar-day"></i> <span id="tituloModalDia">Dia de Trabalho</span></h2>
+        <span class="close" onclick="fecharModal('modalDiaTrabalho')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="funcionariosDia">
+          <!-- Checkboxes dos funcionários serão gerados dinamicamente -->
+        </div>
+        <div class="form-group">
+          <label for="observacoesDia">Observações:</label>
+          <textarea id="observacoesDia" rows="3"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="salvarDiaTrabalho()">
+          <i class="fas fa-save"></i> Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Histórico Mensal -->
+  <div id="modalHistorico" class="modal">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h2><i class="fas fa-chart-line"></i> <span id="tituloHistorico">Histórico Mensal</span></h2>
+        <span class="close" onclick="fecharModal('modalHistorico')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="historico-controles">
+          <div class="form-group">
+            <label for="anoHistorico">Ano:</label>
+            <select id="anoHistorico" onchange="carregarHistorico()">
+              <!-- Anos serão carregados dinamicamente -->
+            </select>
+          </div>
+          <div class="totais-geral">
+            <h3>Totais Gerais (Todos os Tempos)</h3>
+            <div class="stats-grid-small">
+              <div class="stat-item">
+                <strong id="totalGeralFuncionarios">R$ 0,00</strong>
+                <p>Total Funcionários</p>
+              </div>
+              <div class="stat-item">
+                <strong id="totalGeralVeiculo">R$ 0,00</strong>
+                <p>Total Veículo</p>
+              </div>
+              <div class="stat-item">
+                <strong id="totalGeralGeral">R$ 0,00</strong>
+                <p>Total Geral</p>
+              </div>
+              <div class="stat-item">
+                <strong id="totalDiasGeral">0</strong>
+                <p>Dias Trabalhados</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="historico-lista">
+          <h3>Histórico Mensal do Ano <span id="anoSelecionado"></span></h3>
+          <div id="listaHistorico">
+            <!-- Histórico será carregado dinamicamente -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Comprovante de Pagamento -->
+  <div id="modalComprovante" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-receipt"></i> Adicionar Comprovante de Pagamento</h2>
+        <span class="close" onclick="fecharModal('modalComprovante')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="formComprovante">
+          <div class="form-group">
+            <label for="funcionarioComprovante">Funcionário:</label>
+            <select id="funcionarioComprovante" required>
+              <option value="">Selecione um funcionário</option>
+              <!-- Funcionários serão carregados dinamicamente -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="periodoInicioComprovante">Período Início:</label>
+            <input type="date" id="periodoInicioComprovante" required>
+          </div>
+          <div class="form-group">
+            <label for="periodoFimComprovante">Período Fim:</label>
+            <input type="date" id="periodoFimComprovante" required>
+          </div>
+          <div class="form-group">
+            <label for="valorComprovante">Valor Pago (R$):</label>
+            <input type="number" id="valorComprovante" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="arquivoComprovante">Comprovante (Opcional):</label>
+            <input type="file" id="arquivoComprovante" accept=".pdf,.jpg,.jpeg,.png">
+            <small>Formatos aceitos: PDF, JPG, PNG</small>
+          </div>
+          <div class="form-group">
+            <label for="observacoesComprovante">Observações:</label>
+            <textarea id="observacoesComprovante" rows="3" placeholder="Observações sobre este pagamento..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Salvar Comprovante
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Perfil do Funcionário -->
+  <div id="modalPerfilFuncionario" class="modal">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h2><i class="fas fa-user-circle"></i> <span id="tituloPerfilFuncionario">Perfil do Funcionário</span></h2>
+        <span class="close" onclick="fecharModal('modalPerfilFuncionario')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="perfil-funcionario-tabs">
+          <button class="tab-btn active" onclick="alternarAbaPerfilFuncionario('info')">
+            <i class="fas fa-info-circle"></i> Informações
+          </button>
+          <button class="tab-btn" onclick="alternarAbaPerfilFuncionario('comprovantes')">
+            <i class="fas fa-receipt"></i> Comprovantes
+          </button>
+          <button class="tab-btn" onclick="alternarAbaPerfilFuncionario('historico')">
+            <i class="fas fa-history"></i> Histórico
+          </button>
+        </div>
+
+        <!-- Aba de Informações -->
+        <div id="abaPerfilInfo" class="tab-content active">
+          <div class="funcionario-info-detalhada">
+            <div class="info-card">
+              <h3 id="perfilNomeFuncionario">Nome do Funcionário</h3>
+              <p><strong>Diária:</strong> <span id="perfilDiariaFuncionario">R$ 0,00</span></p>
+              <p><strong>Total de dias trabalhados:</strong> <span id="perfilTotalDias">0</span></p>
+              <p><strong>Total ganho:</strong> <span id="perfilTotalGanho">R$ 0,00</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aba de Comprovantes -->
+        <div id="abaPerfilComprovantes" class="tab-content">
+          <div class="comprovantes-funcionario">
+            <div class="comprovante-form">
+              <h4>Adicionar Novo Comprovante</h4>
+              <form id="formComprovantePerfilFuncionario">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="periodoInicioPerfilComprovante">Período Início:</label>
+                    <input type="date" id="periodoInicioPerfilComprovante" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="periodoFimPerfilComprovante">Período Fim:</label>
+                    <input type="date" id="periodoFimPerfilComprovante" required>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="valorPerfilComprovante">Valor Pago (R$):</label>
+                    <input type="number" id="valorPerfilComprovante" step="0.01" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="arquivoPerfilComprovante">Comprovante (Opcional):</label>
+                    <input type="file" id="arquivoPerfilComprovante" accept=".pdf,.jpg,.jpeg,.png">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="observacoesPerfilComprovante">Observações:</label>
+                  <textarea id="observacoesPerfilComprovante" rows="3" placeholder="Observações sobre este pagamento..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Salvar Comprovante
+                </button>
+              </form>
+            </div>
+            
+            <div class="comprovantes-lista">
+              <h4>Comprovantes Salvos</h4>
+              <div id="listaComprovantesPerfilFuncionario">
+                <!-- Lista será gerada dinamicamente -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aba de Histórico -->
+        <div id="abaPerfilHistorico" class="tab-content">
+          <div class="funcionario-historico">
+            <div class="filtros-historico">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="anoHistoricoFuncionario">Ano:</label>
+                  <select id="anoHistoricoFuncionario" onchange="carregarHistoricoFuncionario()">
+                    <!-- Anos serão carregados dinamicamente -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="mesHistoricoFuncionario">Mês:</label>
+                  <select id="mesHistoricoFuncionario" onchange="carregarHistoricoFuncionario()">
+                    <option value="">Todos os meses</option>
+                    <option value="1">Janeiro</option>
+                    <option value="2">Fevereiro</option>
+                    <option value="3">Março</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Maio</option>
+                    <option value="6">Junho</option>
+                    <option value="7">Julho</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div id="historicoFuncionario">
+              <!-- Histórico será carregado dinamicamente -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <script>
+    // Verificar se jsPDF foi carregado
+    console.log('jsPDF loaded check:', typeof window.jspdf);
+    console.log('window.jspdf:', window.jspdf);
+    if (window.jspdf) {
+      console.log('jsPDF.jsPDF:', typeof window.jspdf.jsPDF);
+    }
+  </script>
+  <script src="renderer.js"></script>
+</body>
+</html>

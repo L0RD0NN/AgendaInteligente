@@ -1,0 +1,80 @@
+/* Correções adicionais para garantir visibilidade do histórico */
+
+#abaPerfilHistorico * {
+    color: #333 !important;
+}
+
+.resumo-card * {
+    color: white !important;
+}
+
+.dia-badge {
+    color: white !important;
+}
+
+.dias-count {
+    color: #1976d2 !important;
+}
+
+.valor-mes {
+    color: #2e7d32 !important;
+}
+
+#abaPerfilHistorico.active .historico-resumo-funcionario,
+#abaPerfilHistorico.active .historico-mensal-funcionario,
+#abaPerfilHistorico.active .meses-container,
+#abaPerfilHistorico.active .mes-card {
+    display: block !important;
+    visibility: visible !important;
+}
+
+#abaPerfilInfo .historico-resumo-funcionario,
+#abaPerfilInfo .historico-mensal-funcionario,
+#abaPerfilInfo .meses-container,
+#abaPerfilInfo .mes-card,
+#abaPerfilComprovantes .historico-resumo-funcionario,
+#abaPerfilComprovantes .historico-mensal-funcionario,
+#abaPerfilComprovantes .meses-container,
+#abaPerfilComprovantes .mes-card {
+    display: none !important;
+}
+
+#abaPerfilInfo #historicoFuncionario,
+#abaPerfilComprovantes #historicoFuncionario,
+#abaPerfilInfo .historico-resumo-funcionario,
+#abaPerfilInfo .historico-mensal-funcionario,
+#abaPerfilComprovantes .historico-resumo-funcionario,
+#abaPerfilComprovantes .historico-mensal-funcionario {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+#abaPerfilHistorico #historicoFuncionario,
+#abaPerfilHistorico.active #historicoFuncionario {
+    display: block !important;
+    visibility: visible !important;
+}
+
+#abaPerfilInfo .filtros-historico,
+#abaPerfilComprovantes .filtros-historico {
+    display: none !important;
+}
+
+#abaPerfilHistorico .filtros-historico {
+    display: block !important;
+}
+
+/* Fixar cores para elementos específicos */
+.mes-header h5 {
+    color: #333 !important;
+    font-weight: bold !important;
+}
+
+.historico-mensal-funcionario h4 {
+    color: #333 !important;
+    font-weight: bold !important;
+}
+
+.dias-trabalhados label {
+    color: #666 !important;
+}
