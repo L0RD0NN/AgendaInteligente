@@ -137,17 +137,8 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 👨‍💻 Autor
 
-**Igor Gonçalves**
-
-- 📧 Email: [seu-email@exemplo.com]
-- 💼 LinkedIn: [seu-linkedin]
-- 🐙 GitHub: [@seu-usuario](https://github.com/seu-usuario)
-
-## 🙏 Agradecimentos
-
-- Electron team pela excelente framework
-- Comunidade open source pelas bibliotecas utilizadas
-- Todos que contribuíram para o desenvolvimento deste projeto
+**Igor Gustavo**
+- 💼 LinkedIn: [(https://www.linkedin.com/in/igor-gustavo-4573b0294/)]
 
 ---
 
